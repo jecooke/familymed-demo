@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>FamilyMed</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fafaf8; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #error {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      font-family: sans-serif; color: #c0392b; background: #fafaf8; padding: 2rem; text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="familymed_canvas"></canvas>
+  <div id="error"></div>
+  <script type="module">
+    import init, { WebHandle } from "./pkg/familymed.js";
+
+    async function main() {
+      await init();
+      const handle = new WebHandle();
+      const canvas = document.getElementById("familymed_canvas");
+      try {
+        await handle.start(canvas);
+      } catch (e) {
+        if (!handle.has_panicked()) throw e;
+        document.getElementById("error").style.display = "flex";
+        document.getElementById("error").innerText = handle.panic_message() ?? "FamilyMed crashed.";
+      }
+    }
+    main();
+  </script>
+</body>
+</html>
